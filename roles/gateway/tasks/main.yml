@@ -1,0 +1,23 @@
+---
+# tasks file for roles/gateway
+- name: Set ipv4 forwarding
+  ansible.posix.sysctl:
+    name: net.ipv4.ip_forward
+    value: '1'
+    sysctl_set: yes
+    state: present
+    reload: yes
+
+- name: Install iptables on Debian family
+  ansible.builtin.apt:
+    pkg:
+      - iptables
+      - iptables-persistent
+
+- name: Enable netfilter-persistent
+  ansible.builtin.systemd:
+    name: netfilter-persistent
+    enabled: yes
+
+- name: Set rules
+  import_tasks: rules.yml
