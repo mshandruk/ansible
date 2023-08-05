@@ -1,0 +1,28 @@
+---
+# tasks file for docker
+- name: Install docker on RedHat family
+  import_tasks: redhat.yml
+  when: ansible_os_family == 'RedHat'
+
+- name: Install docker on Debian family
+  import_tasks: debian.yml
+  when: ansible_os_family == 'Debian'
+
+- name: Add user in docker group
+  ansible.builtin.user:
+    name: "{{ docker_user }}"
+    groups: docker
+    append: yes
+  notify: restart docker
+  when: docker_user is defined
+
+- name: Change docker network
+  ansible.builtin.template:
+    src: daemon.json.j2
+    dest: /etc/docker/daemon.json
+    backup: yes
+  when: |
+    (bip is defined) and
+    (base_net is defined) and
+    (size_nets is defined)
+  notify: restart docker

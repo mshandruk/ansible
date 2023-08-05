@@ -1,0 +1,4 @@
+---
+# handlers file for roles/gateway
+- name: save rules
+  command: netfilter-persistent save

@@ -1,0 +1,14 @@
+- hosts: all
+  become: true
+  tasks:
+    - name: Upgrade system on Debian Family
+      ansible.builtin.apt:
+        update_cache: yes
+        upgrade: dist
+      when: ansible_os_family == 'Debian'
+
+    - name: Upgrade system on RedHat Family
+      ansible.builtin.yum:
+        name: '*'
+        state: latest
+      when: ansible_os_family == 'RedHat'

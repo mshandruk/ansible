@@ -1,0 +1,13 @@
+---
+# tasks file for kvm
+- name: Install on Debian family
+  import_tasks: debian.yml
+  when: ansible_os_family == 'Debian'
+
+- name: Add user in groups libvirt, libvirt-qemu
+  ansible.builtin.user:
+    name: "{{ username }}"
+    groups: libvirt, libvirt-qemu
+    append: yes
+  notify: restart libvirtd
+  when: username is defined
